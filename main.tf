@@ -45,8 +45,9 @@ locals {
 }
 
 module "nat-gateway" {
-  source                = "GoogleCloudPlatform/managed-instance-group/google"
-  version               = "1.1.15"
+  #source                = "GoogleCloudPlatform/managed-instance-group/google"
+  #version               = "1.1.15"
+  source                = "github.com/AspiraLimited/terraform-google-managed-instance-group?ref=32b3736"
   module_enabled        = "${var.module_enabled}"
   project               = "${var.project}"
   region                = "${var.region}"
@@ -71,9 +72,7 @@ module "nat-gateway" {
   ssh_source_ranges     = "${var.ssh_source_ranges}"
   http_health_check     = "${var.autohealing_enabled}"
 
-  update_strategy = "ROLLING_UPDATE"
-
-  rolling_update_policy = [
+  update_policy = [
     {
       type                  = "PROACTIVE"
       minimal_action        = "REPLACE"
