@@ -18,12 +18,12 @@ data "template_file" "nat-startup-script" {
   template = file(format("%s/config/startup.sh", path.module))
 
   vars = {
-    squid_enabled       = var.squid_enabled
-    squid_config        = var.squid_config
-    module_path         = path.module
-    debug_utils_enabled = var.debug_utils_enabled
+    squid_enabled                  = var.squid_enabled
+    squid_config                   = var.squid_config
+    module_path                    = path.module
+    debug_utils_enabled            = var.debug_utils_enabled
     stackdriver_monitoring_enabled = var.stackdriver_monitoring_enabled
-    stackdriver_logging_enabled = var.stackdriver_logging_enabled
+    stackdriver_logging_enabled    = var.stackdriver_logging_enabled
   }
 }
 
@@ -59,7 +59,7 @@ locals {
 
 module "instance_template" {
   source             = "terraform-google-modules/vm/google//modules/instance_template"
-  version            = "~> v1.4"
+  version            = "~> v4.0"
   project_id         = var.project
   region             = var.region
   subnetwork         = var.subnetwork
@@ -85,7 +85,7 @@ module "instance_template" {
 
 module "nat-gateway" {
   source             = "terraform-google-modules/vm/google//modules/mig"
-  version            = "~> v1.4"
+  version            = "~> v4.0"
   project_id         = var.project
   region             = var.region
   network            = var.network
@@ -94,17 +94,30 @@ module "nat-gateway" {
   hostname           = local.name
   instance_template  = module.instance_template.self_link
   target_size        = 1
-  hc_port            = "80"
   update_policy = [{
-    type                    = "PROACTIVE"
-    minimal_action          = "REPLACE"
-    max_surge_fixed         = 0
-    max_surge_percent       = null
-    max_unavailable_fixed   = 3
-    max_unavailable_percent = null
-    min_ready_sec           = 30
+    type                         = "PROACTIVE"
+    minimal_action               = "REPLACE"
+    max_surge_fixed              = 0
+    max_surge_percent            = null
+    max_unavailable_fixed        = 3
+    max_unavailable_percent      = null
+    min_ready_sec                = 30
+    instance_redistribution_type = "PROACTIVE"
   }]
-  http_healthcheck_enable   = var.autohealing_enabled
+  health_check = {
+    type                = var.autohealing_enabled ? "http" : ""
+    initial_delay_sec   = 30
+    check_interval_sec  = 30
+    healthy_threshold   = 1
+    timeout_sec         = 10
+    unhealthy_threshold = 5
+    response            = ""
+    proxy_header        = "NONE"
+    port                = 80
+    request             = ""
+    request_path        = "/"
+    host                = ""
+  }
   distribution_policy_zones = [local.zone]
 }
 
