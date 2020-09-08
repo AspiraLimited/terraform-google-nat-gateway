@@ -50,7 +50,7 @@ data "google_compute_instance" "nat-server" {
 }
 
 locals {
-  zone          = "${var.zone == "" ? lookup(var.region_params["${var.region}"], "zone") : var.zone}"
+  zone          = var.zone == "" ? lookup(var.region_params["${var.region}"], "zone") : var.zone
   name          = "${var.name}nat-gateway-${local.zone}"
   instance_tags = ["inst-${local.zonal_tag}", "inst-${local.regional_tag}"]
   zonal_tag     = "${var.name}nat-${local.zone}"
@@ -58,8 +58,7 @@ locals {
 }
 
 module "instance_template" {
-  source             = "terraform-google-modules/vm/google//modules/instance_template"
-  version            = "~> v4.0"
+  source             = "github.com/terraform-google-modules/terraform-google-vm//modules/instance_template?ref=6fb2b42"
   project_id         = var.project
   region             = var.region
   subnetwork         = var.subnetwork
@@ -84,8 +83,7 @@ module "instance_template" {
 }
 
 module "nat-gateway" {
-  source             = "terraform-google-modules/vm/google//modules/mig"
-  version            = "~> v4.0"
+  source             = "github.com/terraform-google-modules/terraform-google-vm//modules/mig?ref=6fb2b42"
   project_id         = var.project
   region             = var.region
   network            = var.network
