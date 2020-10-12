@@ -50,7 +50,7 @@ data "google_compute_instance" "nat-server" {
 }
 
 locals {
-  zone          = var.zone == "" ? lookup(var.region_params["${var.region}"], "zone") : var.zone
+  zone          = var.zone == "" ? lookup(var.region_params[var.region], "zone") : var.zone
   name          = "${var.name}nat-gateway-${local.zone}"
   instance_tags = ["inst-${local.zonal_tag}", "inst-${local.regional_tag}"]
   zonal_tag     = "${var.name}nat-${local.zone}"
