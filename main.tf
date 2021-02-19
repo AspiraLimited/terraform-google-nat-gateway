@@ -40,9 +40,11 @@ data "google_compute_address" "default" {
 }
 
 data "google_compute_region_instance_group" "nat-group" {
-  project   = var.project
-  region    = var.region
-  self_link = module.nat-gateway.instance_group
+  project    = var.project
+  region     = var.region
+  self_link  = module.nat-gateway.instance_group
+  # blocks defers reading of the data source until after all changes to the dependencies have been applied.
+  depends_on = [module.nat-gateway]
 }
 
 data "google_compute_instance" "nat-server" {
@@ -58,7 +60,8 @@ locals {
 }
 
 module "instance_template" {
-  source             = "github.com/terraform-google-modules/terraform-google-vm//modules/instance_template?ref=6fb2b42"
+  source             = "terraform-google-modules/vm/google//modules/instance_template"
+  version            = "6.0.0"
   project_id         = var.project
   region             = var.region
   subnetwork         = var.subnetwork
@@ -83,7 +86,8 @@ module "instance_template" {
 }
 
 module "nat-gateway" {
-  source             = "github.com/terraform-google-modules/terraform-google-vm//modules/mig?ref=6fb2b42"
+  source             = "terraform-google-modules/vm/google//modules/mig"
+  version            = "6.0.0"
   project_id         = var.project
   region             = var.region
   network            = var.network
@@ -92,6 +96,7 @@ module "nat-gateway" {
   hostname           = local.name
   instance_template  = module.instance_template.self_link
   target_size        = 1
+  wait_for_instances = "true"
   update_policy = [{
     type                         = "PROACTIVE"
     minimal_action               = "REPLACE"
