@@ -40,9 +40,9 @@ data "google_compute_address" "default" {
 }
 
 data "google_compute_region_instance_group" "nat-group" {
-  project    = var.project
-  region     = var.region
-  self_link  = module.nat-gateway.instance_group
+  project   = var.project
+  region    = var.region
+  self_link = module.nat-gateway.instance_group
   # blocks defers reading of the data source until after all changes to the dependencies have been applied.
   depends_on = [module.nat-gateway]
 }
@@ -80,7 +80,7 @@ module "instance_template" {
   startup_script       = data.template_file.nat-startup-script.rendered
   metadata             = var.metadata
   access_config = [{
-    nat_ip       = element(concat(google_compute_address.default.*.address, data.google_compute_address.default.*.address, list("")), 0)
+    nat_ip       = try(google_compute_address.default.0.address, data.google_compute_address.default.0.address)
     network_tier = "PREMIUM"
   }]
 }
@@ -136,7 +136,7 @@ resource "google_compute_route" "nat-gateway" {
   network                = data.google_compute_network.network.self_link
   next_hop_instance      = data.google_compute_instance.nat-server.self_link
   next_hop_instance_zone = local.zone
-  tags                   = var.use_target_tags ? compact(concat(list(local.regional_tag, local.zonal_tag), var.tags)) : []
+  tags                   = var.use_target_tags ? compact(concat(tolist([local.regional_tag, local.zonal_tag]), var.tags)) : []
   priority               = var.route_priority
 }
 
@@ -150,7 +150,7 @@ resource "google_compute_firewall" "nat-gateway" {
     protocol = "all"
   }
 
-  source_tags = var.use_target_tags ? compact(concat(list(local.regional_tag, local.zonal_tag), var.tags)) : []
+  source_tags = var.use_target_tags ? compact(concat(tolist([local.regional_tag, local.zonal_tag]), var.tags)) : []
   target_tags = compact(concat(local.instance_tags, var.tags))
 }
 
