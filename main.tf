@@ -61,7 +61,7 @@ locals {
 
 module "instance_template" {
   source             = "terraform-google-modules/vm/google//modules/instance_template"
-  version            = "6.0.0"
+  version            = "6.4.0"
   project_id         = var.project
   region             = var.region
   subnetwork         = var.subnetwork
@@ -87,7 +87,7 @@ module "instance_template" {
 
 module "nat-gateway" {
   source             = "terraform-google-modules/vm/google//modules/mig"
-  version            = "6.0.0"
+  version            = "6.4.0"
   project_id         = var.project
   region             = var.region
   network            = var.network
