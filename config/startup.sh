@@ -6,12 +6,14 @@ sysctl -w net.ipv4.ip_forward=1
 # Make forwarding persistent.
 sed -i= 's/^[# ]*net.ipv4.ip_forward=[[:digit:]]/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
 
+# Configure ip_conntrack
+# hashsize = nf_conntrack_max / 4
+modprobe ip_conntrack hashsize=131072
+echo "131072" > /sys/module/nf_conntrack/parameters/hashsize
+
 # Increase conntrack table
 sysctl -w net.netfilter.nf_conntrack_max=524288
 echo net.netfilter.nf_conntrack_max=524288 >> /etc/sysctl.conf
-
-# hashsize = nf_conntrack_max / 4
-echo "131072" > /sys/module/nf_conntrack/parameters/hashsize
 
 iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
