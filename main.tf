@@ -61,7 +61,7 @@ locals {
 
 module "instance_template" {
   source             = "terraform-google-modules/vm/google//modules/instance_template"
-  version            = "6.4.0"
+  version            = "7.4.0"
   project_id         = var.project
   region             = var.region
   subnetwork         = var.subnetwork
@@ -87,7 +87,7 @@ module "instance_template" {
 
 module "nat-gateway" {
   source             = "terraform-google-modules/vm/google//modules/mig"
-  version            = "6.4.0"
+  version            = "7.4.0"
   project_id         = var.project
   region             = var.region
   network            = var.network
@@ -104,6 +104,7 @@ module "nat-gateway" {
     max_surge_percent            = null
     max_unavailable_fixed        = 3
     max_unavailable_percent      = null
+    replacement_method           = "RECREATE"
     min_ready_sec                = 30
     instance_redistribution_type = "PROACTIVE"
   }]
