@@ -14,51 +14,51 @@
  * limitations under the License.
  */
 
-variable module_enabled {
+variable "module_enabled" {
   description = "To disable this module, set this to false"
   default     = true
 }
 
-variable project {
+variable "project" {
   description = "The project to deploy to, if not set the default provider project is used."
   default     = ""
 }
 
-variable network {
+variable "network" {
   description = "The network to deploy to"
   default     = "default"
 }
 
-variable network_project {
+variable "network_project" {
   description = "Name of the project for the network. Useful for shared VPC. Default is var.project."
   default     = ""
 }
 
-variable subnetwork {
+variable "subnetwork" {
   description = "The subnetwork to deploy to"
   default     = "default"
 }
 
-variable region {
+variable "region" {
   description = "The region to create the nat gateway instance in."
 }
 
-variable zone {
+variable "zone" {
   description = "Override the zone used in the `region_params` map for the region."
   default     = ""
 }
 
-variable name {
+variable "name" {
   description = "Prefix added to the resource names, for example 'prod-'. By default, resources will be named in the form of '<name>nat-gateway-<zone>'"
   default     = ""
 }
 
-variable ip_address_name {
+variable "ip_address_name" {
   description = "Name of an existing reserved external address to use."
   default     = ""
 }
 
-variable tags {
+variable "tags" {
   description = "Additional compute instance network tags to apply route to."
   type        = list(string)
   default     = []
@@ -76,57 +76,52 @@ variable "nat_ig_tags" {
   default     = []
 }
 
-variable route_priority {
+variable "route_priority" {
   description = "The priority for the Compute Engine Route"
   default     = 800
 }
 
-variable machine_type {
+variable "machine_type" {
   description = "The machine type for the NAT gateway instances"
   default     = "n1-standard-2"
 }
 
-variable compute_image {
+variable "compute_image" {
   description = "Image used for NAT compute VMs."
-  default     = "debian-9"
+  default     = "debian-11"
 }
 
-variable compute_family {
+variable "compute_family" {
   description = "Image family used for NAT compute VMs."
   default     = "debian-cloud"
 }
 
-variable ip {
+variable "ip" {
   description = "Override the internal IP. If not provided, an internal IP will automatically be assigned."
   default     = ""
 }
 
-variable squid_enabled {
+variable "squid_enabled" {
   description = "Enable squid3 proxy on port 3128."
   default     = "false"
 }
 
-variable debug_utils_enabled {
+variable "debug_utils_enabled" {
   description = "Install dnsutils and traceroute for debugging purposes"
   default     = "false"
 }
 
-variable stackdriver_monitoring_enabled {
-  description = "Enable stackdriver monitoring agent"
-  default = "true"
+variable "ops_agent_enabled" {
+  description = "Enable ops agent"
+  default     = "true"
 }
 
-variable stackdriver_logging_enabled {
-  description = "Enable stackdriver logging agent"
-  default = "true"
-}
-
-variable squid_config {
+variable "squid_config" {
   description = "The squid config file to use. If not specifed the module file config/squid.conf will be used."
   default     = ""
 }
 
-variable metadata {
+variable "metadata" {
   description = "Metadata to be attached to the NAT gateway instance"
   type        = map(any)
   default     = {}
@@ -137,29 +132,29 @@ variable "ssh_fw_rule" {
   default     = true
 }
 
-variable ssh_source_ranges {
+variable "ssh_source_ranges" {
   description = "Network ranges to allow SSH from"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
 
-variable instance_labels {
+variable "instance_labels" {
   description = "Labels added to instances."
   type        = map(any)
   default     = {}
 }
 
-variable service_account_email {
+variable "service_account_email" {
   description = "The email of the service account for the instance template."
   default     = "default"
 }
 
-variable autohealing_enabled {
+variable "autohealing_enabled" {
   description = "Enable instance autohealing using http health check"
   default     = false
 }
 
-variable region_params {
+variable "region_params" {
   description = "Map of default zones and IPs for each region. Can be overridden using the `zone` and `ip` variables."
   type        = map(any)
 

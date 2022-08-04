@@ -1,4 +1,6 @@
-#!/bin/bash -xe
+#!/usr/bin/env bash
+
+set -xe
 
 # Enable ip forwarding and nat
 sysctl -w net.ipv4.ip_forward=1
@@ -15,19 +17,20 @@ echo "131072" > /sys/module/nf_conntrack/parameters/hashsize
 sysctl -w net.netfilter.nf_conntrack_max=524288
 echo net.netfilter.nf_conntrack_max=524288 >> /etc/sysctl.conf
 
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+interface=$(ip ro show default | awk '{print $5}')
+iptables -t nat -A POSTROUTING -o "$interface" -j MASQUERADE
 
-apt-get update
+apt update
 
-apt-get install -y conntrack
+apt install -y conntrack
 
 # Install nginx for instance http health check
-apt-get install -y nginx
+apt install -y nginx
 
 ENABLE_SQUID="${squid_enabled}"
 
 if [[ "$ENABLE_SQUID" == "true" ]]; then
-  apt-get install -y squid3
+  apt install -y squid3
 
   cat - > /etc/squid/squid.conf <<'EOM'
 ${file("${squid_config == "" ? "${format("%s/config/squid.conf", module_path)}" : squid_config}")}
@@ -40,18 +43,11 @@ fi
 ENABLE_DEBUG_UTILS="${debug_utils_enabled}"
 
 if [[ "$ENABLE_DEBUG_UTILS" == "true" ]]; then
-  apt-get install -y dnsutils traceroute
+  apt install -y dnsutils traceroute
 fi
 
-ENABLE_STACKDRIVER_AGENT="${stackdriver_monitoring_enabled}"
-ENABLE_STACKDRIVER_LOGGING_AGENT="${stackdriver_logging_enabled}"
-
-if [[ "$ENABLE_STACKDRIVER_AGENT" == "true" ]]; then
-  curl -sSO https://dl.google.com/cloudagents/install-monitoring-agent.sh
-  bash install-monitoring-agent.sh
-fi
-
-if [[ "$ENABLE_STACKDRIVER_LOGGING_AGENT" == "true" ]]; then
-  curl -sSO https://dl.google.com/cloudagents/install-logging-agent.sh
-  bash install-logging-agent.sh
+ENABLE_OPS_AGENT="${ops_agent_enabled}"
+if [[ "$ENABLE_OPS_AGENT" == "true" ]]; then
+  curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+  bash add-google-cloud-ops-agent-repo.sh --also-install
 fi
