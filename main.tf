@@ -60,7 +60,7 @@ locals {
 
 module "instance_template" {
   source             = "terraform-google-modules/vm/google//modules/instance_template"
-  version            = "7.4.0"
+  version            = "10.1.1"
   project_id         = var.project
   region             = var.region
   subnetwork         = var.subnetwork
@@ -86,12 +86,9 @@ module "instance_template" {
 
 module "nat-gateway" {
   source             = "terraform-google-modules/vm/google//modules/mig"
-  version            = "7.4.0"
+  version            = "10.1.1"
   project_id         = var.project
   region             = var.region
-  network            = var.network
-  subnetwork         = var.subnetwork
-  subnetwork_project = var.project
   hostname           = local.name
   instance_template  = module.instance_template.self_link
   target_size        = 1
@@ -120,6 +117,7 @@ module "nat-gateway" {
     request             = ""
     request_path        = "/"
     host                = ""
+    enable_logging      = false
   }
   distribution_policy_zones = [local.zone]
 }
