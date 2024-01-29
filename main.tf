@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-data "template_file" "nat-startup-script" {
-  template = file(format("%s/config/startup.sh", path.module))
-
-  vars = {
-    squid_enabled       = var.squid_enabled
-    squid_config        = var.squid_config
-    module_path         = path.module
-    debug_utils_enabled = var.debug_utils_enabled
-    ops_agent_enabled   = var.ops_agent_enabled
-  }
-}
-
 data "google_compute_network" "network" {
   name    = var.network
   project = var.network_project == "" ? var.project : var.network_project
@@ -76,8 +64,17 @@ module "instance_template" {
   name_prefix          = local.name
   source_image_family  = var.compute_image
   source_image_project = var.compute_family
-  startup_script       = data.template_file.nat-startup-script.rendered
   metadata             = var.metadata
+  startup_script = templatefile(
+    "${path.module}/config/startup.sh",
+    {
+      squid_enabled       = var.squid_enabled
+      squid_config        = var.squid_config
+      module_path         = path.module
+      debug_utils_enabled = var.debug_utils_enabled
+      ops_agent_enabled   = var.ops_agent_enabled
+    }
+  )
   access_config = [{
     nat_ip       = try(google_compute_address.default.0.address, data.google_compute_address.default.0.address)
     network_tier = "PREMIUM"
