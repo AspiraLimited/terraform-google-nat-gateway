@@ -86,6 +86,11 @@ variable "machine_type" {
   default     = "n1-standard-2"
 }
 
+variable "min_cpu_platform" {
+  description = "Specifies a minimum CPU platform. Applicable values are the friendly names of CPU platforms, such as Intel Haswell or Intel Skylake. See the complete list: https://cloud.google.com/compute/docs/instances/specify-min-cpu-platform"
+  default     = null
+}
+
 variable "compute_image" {
   description = "Image used for NAT compute VMs."
   default     = "debian-11"

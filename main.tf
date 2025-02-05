@@ -48,7 +48,7 @@ locals {
 
 module "instance_template" {
   source             = "terraform-google-modules/vm/google//modules/instance_template"
-  version            = "10.1.1"
+  version            = "13.2.0"
   project_id         = var.project
   region             = var.region
   subnetwork         = var.subnetwork
@@ -61,6 +61,7 @@ module "instance_template" {
     scopes = ["cloud-platform"]
   }
   machine_type         = var.machine_type
+  min_cpu_platform     = var.min_cpu_platform
   name_prefix          = local.name
   source_image_family  = var.compute_image
   source_image_project = var.compute_family
@@ -83,7 +84,7 @@ module "instance_template" {
 
 module "nat-gateway" {
   source             = "terraform-google-modules/vm/google//modules/mig"
-  version            = "10.1.1"
+  version            = "13.2.0"
   project_id         = var.project
   region             = var.region
   hostname           = local.name
