@@ -10,12 +10,12 @@ sed -i= 's/^[# ]*net.ipv4.ip_forward=[[:digit:]]/net.ipv4.ip_forward=1/g' /etc/s
 
 # Configure ip_conntrack
 # hashsize = nf_conntrack_max / 4
-modprobe ip_conntrack hashsize=131072
-echo "131072" > /sys/module/nf_conntrack/parameters/hashsize
+modprobe ip_conntrack hashsize=262144
+echo "262144" >/sys/module/nf_conntrack/parameters/hashsize
 
 # Increase conntrack table
-sysctl -w net.netfilter.nf_conntrack_max=524288
-echo net.netfilter.nf_conntrack_max=524288 >> /etc/sysctl.conf
+sysctl -w net.netfilter.nf_conntrack_max=1048576
+echo net.netfilter.nf_conntrack_max=1048576 >>/etc/sysctl.conf
 
 interface=$(ip ro show default | awk '{print $5}')
 iptables -t nat -A POSTROUTING -o "$interface" -j MASQUERADE
@@ -32,7 +32,7 @@ ENABLE_SQUID="${squid_enabled}"
 if [[ "$ENABLE_SQUID" == "true" ]]; then
   apt install -y squid3
 
-  cat - > /etc/squid/squid.conf <<'EOM'
+  cat - >/etc/squid/squid.conf <<'EOM'
 ${file("${squid_config == "" ? "${format("%s/config/squid.conf", module_path)}" : squid_config}")}
 EOM
 
