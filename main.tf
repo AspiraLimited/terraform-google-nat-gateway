@@ -56,6 +56,7 @@ module "instance_template" {
   can_ip_forward     = true
   tags               = compact(concat(local.instance_tags, var.nat_ig_tags))
   labels             = var.labels
+  disk_labels        = var.labels
   service_account = {
     email  = var.service_account_email
     scopes = ["cloud-platform"]
