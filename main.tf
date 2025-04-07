@@ -55,7 +55,7 @@ module "instance_template" {
   subnetwork_project = var.project
   can_ip_forward     = true
   tags               = compact(concat(local.instance_tags, var.nat_ig_tags))
-  labels             = var.instance_labels
+  labels             = var.labels
   service_account = {
     email  = var.service_account_email
     scopes = ["cloud-platform"]
@@ -91,6 +91,7 @@ module "nat-gateway" {
   instance_template  = module.instance_template.self_link
   target_size        = 1
   wait_for_instances = "true"
+  labels             = var.labels
   update_policy = [{
     type                         = "PROACTIVE"
     minimal_action               = "REPLACE"
@@ -155,4 +156,5 @@ resource "google_compute_address" "default" {
   name    = local.zonal_tag
   project = var.project
   region  = var.region
+  labels  = var.labels
 }
