@@ -70,11 +70,13 @@ module "instance_template" {
   startup_script = templatefile(
     "${path.module}/config/startup.sh",
     {
-      squid_enabled       = var.squid_enabled
-      squid_config        = var.squid_config
-      module_path         = path.module
-      debug_utils_enabled = var.debug_utils_enabled
-      ops_agent_enabled   = var.ops_agent_enabled
+      squid_enabled         = var.squid_enabled
+      squid_config          = var.squid_config
+      module_path           = path.module
+      debug_utils_enabled   = var.debug_utils_enabled
+      ops_agent_enabled     = var.ops_agent_enabled
+      node_exporter_enabled = var.node_exporter_enabled
+      node_exporter_version = var.node_exporter_version
     }
   )
   access_config = [{

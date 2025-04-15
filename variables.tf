@@ -243,3 +243,13 @@ variable "dest_ranges" {
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
+
+variable "node_exporter_enabled" {
+  description = "Enable node exporter"
+  default     = "true"
+}
+
+variable "node_exporter_version" {
+  description = "Node exporter version"
+  default     = "1.9.1"
+}

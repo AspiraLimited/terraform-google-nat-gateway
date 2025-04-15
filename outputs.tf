@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-output gateway_ip {
+output "gateway_ip" {
   description = "The internal IP address of the NAT gateway instance."
   value       = data.google_compute_instance.nat-server.network_interface.0.access_config.0.nat_ip
 }
 
-output instance {
+output "instance" {
   description = "The self link to the NAT gateway instance."
   value       = flatten(data.google_compute_region_instance_group.nat-group.instances)
 }
 
-output external_ip {
+output "external_ip" {
   description = "The external IP address of the NAT gateway instance."
   value       = try(google_compute_address.default.0.address, data.google_compute_address.default.0.address)
 }
 
-output routing_tag_regional {
+output "routing_tag_regional" {
   description = "The tag that any other instance will need to have in order to get the regional routing rule"
   value       = local.regional_tag
 }
 
-output routing_tag_zonal {
+output "routing_tag_zonal" {
   description = "The tag that any other instance will need to have in order to get the zonal routing rule"
   value       = local.zonal_tag
 }
@@ -42,4 +42,9 @@ output routing_tag_zonal {
 output "nat_instance_tags" {
   description = "The tag in use by the NAT Gateway instances"
   value       = local.instance_tags
+}
+
+output "nat_instance_name" {
+  description = "The name of the NAT Gateway instance"
+  value       = data.google_compute_instance.nat-server.name
 }
