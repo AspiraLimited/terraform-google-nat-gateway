@@ -56,7 +56,7 @@ fi
 ENABLE_NODE_EXPORTER="${node_exporter_enabled}"
 
 if [[ "$ENABLE_NODE_EXPORTER" == "true" ]]; then
-  curl -sSO https://github.com/prometheus/node_exporter/releases/download/v${node_exporter_version}/node_exporter-${node_exporter_version}.linux-amd64.tar.gz
+  curl -sSLO https://github.com/prometheus/node_exporter/releases/download/v${node_exporter_version}/node_exporter-${node_exporter_version}.linux-amd64.tar.gz
   tar -xzf node_exporter-${node_exporter_version}.linux-amd64.tar.gz
   cp node_exporter-${node_exporter_version}.linux-amd64/node_exporter /usr/local/bin/
   rm -rf node_exporter-${node_exporter_version}.linux-amd64*
