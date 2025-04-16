@@ -29,6 +29,11 @@ output "external_ip" {
   value       = try(google_compute_address.default.0.address, data.google_compute_address.default.0.address)
 }
 
+output "internal_ip" {
+  description = "The internal IP address of the NAT gateway instance."
+  value       = data.google_compute_instance.nat-server.network_interface[0].network_ip
+}
+
 output "routing_tag_regional" {
   description = "The tag that any other instance will need to have in order to get the regional routing rule"
   value       = local.regional_tag
