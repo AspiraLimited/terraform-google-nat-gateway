@@ -30,7 +30,7 @@ apt install -y nginx
 ENABLE_SQUID="${squid_enabled}"
 
 if [[ "$ENABLE_SQUID" == "true" ]]; then
-  apt install -y squid3
+  apt install -y squid
 
   cat - >/etc/squid/squid.conf <<'EOM'
 ${file("${squid_config == "" ? "${format("%s/config/squid.conf", module_path)}" : squid_config}")}
@@ -52,14 +52,19 @@ if [[ "$ENABLE_OPS_AGENT" == "true" ]]; then
   bash add-google-cloud-ops-agent-repo.sh --also-install
 fi
 
+# Install new gVNIC driver
+curl -sSL -o gve-dkms.deb https://github.com/GoogleCloudPlatform/compute-virtual-ethernet-linux/releases/download/v${gvnic_version}/gve-dkms_${gvnic_version}_all.deb &&
+  apt install ./gve-dkms.deb &&
+  modprobe -r gve &&
+  modprobe gve &&
+  rm ./gve-dkms.deb
+
 # Install node_exporter
 ENABLE_NODE_EXPORTER="${node_exporter_enabled}"
 
 if [[ "$ENABLE_NODE_EXPORTER" == "true" ]]; then
-  curl -sSLO https://github.com/prometheus/node_exporter/releases/download/v${node_exporter_version}/node_exporter-${node_exporter_version}.linux-amd64.tar.gz
-  tar -xzf node_exporter-${node_exporter_version}.linux-amd64.tar.gz
-  cp node_exporter-${node_exporter_version}.linux-amd64/node_exporter /usr/local/bin/
-  rm -rf node_exporter-${node_exporter_version}.linux-amd64*
+  curl -sSL https://github.com/prometheus/node_exporter/releases/download/v${node_exporter_version}/node_exporter-${node_exporter_version}.linux-$(dpkg --print-architecture).tar.gz |
+    tar -xz -C /usr/local/bin/ --strip-components=1 --wildcards "node_exporter-*/node_exporter"
   cat - >/etc/systemd/system/node_exporter.service <<EOM
 [Unit]
 Description=Prometheus Node Exporter

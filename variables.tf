@@ -58,6 +58,12 @@ variable "ip_address_name" {
   default     = ""
 }
 
+variable "disk_type" {
+  description = "Boot disk type, can be either pd-ssd, local-ssd, pd-standard, pd-balanced, hyperdisk-balanced etc"
+  type        = string
+  default     = "pd-standard"
+}
+
 variable "tags" {
   description = "Additional compute instance network tags to apply route to."
   type        = list(string)
@@ -93,12 +99,12 @@ variable "min_cpu_platform" {
 
 variable "compute_image" {
   description = "Image used for NAT compute VMs."
-  default     = "debian-11"
+  default     = "ubuntu-2404-lts-amd"
 }
 
 variable "compute_family" {
   description = "Image family used for NAT compute VMs."
-  default     = "debian-cloud"
+  default     = "ubuntu-os-cloud"
 }
 
 variable "ip" {
@@ -246,10 +252,18 @@ variable "dest_ranges" {
 
 variable "node_exporter_enabled" {
   description = "Enable node exporter"
+  type        = string
   default     = "true"
 }
 
 variable "node_exporter_version" {
   description = "Node exporter version"
+  type        = string
   default     = "1.9.1"
+}
+
+variable "gvnic_version" {
+  description = "gVNIC driver version"
+  type        = string
+  default     = "1.4.5"
 }

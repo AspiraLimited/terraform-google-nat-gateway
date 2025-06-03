@@ -57,6 +57,7 @@ module "instance_template" {
   tags               = compact(concat(local.instance_tags, var.nat_ig_tags))
   labels             = var.labels
   disk_labels        = var.labels
+  disk_type          = var.disk_type
   service_account = {
     email  = var.service_account_email
     scopes = ["cloud-platform"]
@@ -77,6 +78,7 @@ module "instance_template" {
       ops_agent_enabled     = var.ops_agent_enabled
       node_exporter_enabled = var.node_exporter_enabled
       node_exporter_version = var.node_exporter_version
+      gvnic_version         = var.gvnic_version
     }
   )
   access_config = [{
