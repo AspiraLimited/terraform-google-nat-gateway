@@ -106,8 +106,13 @@ module "nat-gateway" {
     max_unavailable_percent      = null
     replacement_method           = "RECREATE"
     min_ready_sec                = 30
-    instance_redistribution_type = "PROACTIVE"
+    instance_redistribution_type = var.stateful_internal_ip ? "NONE" : "PROACTIVE"
   }]
+  stateful_ips = var.stateful_internal_ip ? [{
+    interface_name = "nic0"
+    delete_rule    = "NEVER"
+    is_external    = false
+  }] : []
   health_check = {
     type                = var.autohealing_enabled ? "http" : ""
     initial_delay_sec   = 30

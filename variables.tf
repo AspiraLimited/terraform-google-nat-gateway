@@ -267,3 +267,9 @@ variable "gvnic_version" {
   type        = string
   default     = "1.4.5"
 }
+
+variable "stateful_internal_ip" {
+  description = "Keep the internal IP of the NAT instance across recreates, autohealing and updates (stateful internal IP on the MIG, delete_rule NEVER). Everything keyed on the internal address (Endpoints, probe peers) then survives a recreate. Setting it also sets instance_redistribution_type to NONE, which a regional MIG with a stateful policy requires (the MIG is single-zone anyway). On an existing MIG GCP promotes the in-use ephemeral address to a static one. The reserved address outlives a permanent deletion of the MIG and must then be released by hand. Does not change the instance template."
+  type        = bool
+  default     = false
+}
